@@ -184,11 +184,11 @@ const MyPopover = ({children}) => {
                             </Tooltip>
                             {isOwner === true &&
                                 <Tooltip title="Edit" sx={myStyle.editButton}>
-                                    <Link href="/updatesheet" backgroundColor="none">
-                                        <IconButton>
+                                    <IconButton>
+                                        <Link href="/updatesheet" >
                                             <Edit/>
-                                        </IconButton>
-                                    </Link>
+                                        </Link>
+                                    </IconButton>
                                 </Tooltip>
                             }
                             {hasPrvlge === true &&
@@ -200,11 +200,11 @@ const MyPopover = ({children}) => {
                             }
                             {isOwner === true && 
                                 <Tooltip title="Delete">
-                                    <Link href="/deletesheet" backgroundColor="none">
-                                        <IconButton sx={myStyle.deleteButton}>
+                                    <IconButton sx={myStyle.deleteButton}>
+                                        <Link href="/deletesheet" backgroundColor="none">
                                             <DeleteForever/>
-                                        </IconButton>
-                                    </Link>
+                                        </Link>
+                                    </IconButton>
                                 </Tooltip>
                             }
                         </Grid>
