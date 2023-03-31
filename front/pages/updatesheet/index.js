@@ -1,8 +1,8 @@
 import * as React from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { Grid, TextField, Typography, Button, Link } from "@mui/material"
+import { useRouter } from 'next/router'
 import axios from "axios"
-
 
 const myStyle = {
     gridConatiner: {
@@ -15,133 +15,135 @@ const myStyle = {
 }
 
 function UpdateSheet() {
-
-    // const [helperText, setHelperText] = React.useState({
-    //     isbn:"Please enter the book's isbn",
-    //     title: "Please enter the book's title",
-    //     desc: "Please enter the book's description",
-    //     author: "Please enter the book's author",
-    //     genre: "Please enter the book's genre",
-    //     pbDate: "Please enter the book's publication date",
-    //     nbPage: "Please enter the number of book pages",
-    //     price: "Please enter the book's price",
-    //     bkInStck: "Please enter the number of books in your stock"
-    // })
-    // const [error, setError] = React.useState({
-    //     isbn: false,
-    //     title: false,
-    //     desc: false,
-    //     author: false,
-    //     genre: false,
-    //     pbDate: false,
-    //     nbPage: false,
-    //     price: false,
-    //     bkInStck: false,
-    // })
-    
 const [inputs, setInputs] = React.useState({
-    // grouping all the inputs params in the same const   
+    //grouping all the inputs params in the same const   
     isbn: {
-        input: sessionStorage.getItem("isbn"),
+        input: "",
         helperText: "The book's isbn cannot be change",
         error: false
     },
     title: {
-        input: sessionStorage.getItem("title"),
+        input: "",
         helperText: "Enter value to change the book's title",
         error: false
     },
     desc: {
-        input: sessionStorage.getItem("desc"),
+        input: "",
         helperText: "Enter value to change the book's description",
         error: false
     },
     author: {
-        input: sessionStorage.getItem("author"),
+        input: "",
         helperText: "Enter value to change the book's author",
         error: false
     },
     genre: {
-        input: sessionStorage.getItem("genre"),
+        input: "",
         helperText: "Enter value to change the book's genre",
         error: false
     },
     pbDate: {
-        input: sessionStorage.getItem("pbDate"),
+        input: "",
         helperText: "Enter value to change the book's publication date",
         error: false
     },
     nbPage: {
-        input: sessionStorage.getItem("nbPage"),
+        input: "",
         helperText: "Enter value to change the number of book pages",
         error: false
     },
     price: {
-        input: sessionStorage.getItem("price"),
+        input: "",
         helperText: "Enter value to change the book's price",
         error: false
     },
     bkInStck: {
-        input: sessionStorage.getItem("bkInStck"),
+        input: "",
         helperText: "Enter value to change the number of books in your stock",
         error: false
     }
 })
-    // Get the sheet to update from back     
-
-    // React.useEffect(() => {
-    //     const selectedCardIsbn = sessionStorage.getItem("isbn")
-    //     const param = {isbn: selectedCardIsbn}
-    //     const getCardToUpdate = async () => {
-    //         try {
-    //             const { data } = await axios ({
-    //                 method: "POST",
-    //                 url: "/api/getsheet",
-    //                 data: param
-    //             })
-    //             const  values = Object.values(data[0])
-    //             const fields = Object.keys(data[0])
-
-    //             // How i want to set the inputs with data
-    //             for(const i=0; i < 1 ; i++) {
-    //                 console.log('hello');
-    //                 for(const i=0; i < 11; i++) {
-    //                     console.log(`${fields[i]} : ${values[i]}`)
-    //                 }
-    //             }
-
-    //         } catch (err) {
-    //             console.log({error: err})
-    //         }
-    //     }
-    //     getCardToUpdate()
-    //     // console.log(inputs)
-    // }, [])
-
-
+    // Get the sheet to update from back   
+    React.useEffect(() => {
+        const selectedCardIsbn = sessionStorage.getItem("isbn")
+        const param = {isbn: selectedCardIsbn}
+        const getCardToUpdate = async () => {
+            try {
+                const { data } = await axios ({
+                    method: "POST",
+                    url: "/api/getsheet",
+                    data: param
+                })
+                return data
+            } catch (err) {
+                return ({error: err})
+            }
+        }
+        getCardToUpdate()
+        .then(data => {
+            if (data.error) {
+                return data.error
+            } else {
+            
+                for (const [key, value] of Object.entries(data[0])) {
+                    setInputs(prevState => ({
+                        ...prevState,
+                        [key]: {
+                            input: value,
+                            helperText: "Enter values to change  to change old ones",
+                            error: false
+                        }
+                    }))
+                }
+            }
+        })
+    }, [])
+    const setPrice = (param) => {
+        if (param) {
+            if (!param.$numberDecimal) {
+                return param
+            } else {
+                return param.$numberDecimal
+            }
+        }
+        return param
+    }
+    const setDate = (param) => {
+        if (param) {
+            const date = Object(param).split("T")[0]
+            return date
+        }
+        else return null
+    }
+    const [hasChanged, setHasChanged] = React.useState(false)
+    const router = useRouter()    
     const handleChange = e => {
         const { name, value } = e.target;
         setInputs(prevState => ({
             ...prevState,
-            [name]: value
-        }));
+            [name]: {
+                input: value,
+                helperText: prevState[name].helperText,
+                error: false
+            }
+        }))
+        setHasChanged(true)
     }
-
-    console.log(inputs)
-
     const handleUpdate = async (event) => {
         event.preventDefault()
         const formData = {
             isbn: inputs.isbn.input,
-            title: inputs.title,
-            desc: inputs.desc,
-            author: inputs.author,
-            genre: inputs.genre,
-            pbDate: inputs.pbDate,
-            nbPage: inputs.nbPage,
-            price: inputs.price,
-            bkInStck: inputs.bkInStck,
+            title: inputs.title.input,
+            desc: inputs.desc.input,
+            author: inputs.author.input,
+            genre: inputs.genre.input,
+            pbDate: setDate(inputs.pbDate.input),
+            nbPage: `${inputs.nbPage.input}`,
+            price: setPrice(inputs.price.input),
+            bkInStck: `${inputs.bkInStck.input}`
         }
+        console.log(formData)
+
         try {
             const { data } = await axios ({
                 method: "PUT",
@@ -152,13 +154,12 @@ const [inputs, setInputs] = React.useState({
                 window.alert(data.message)
                 window.location.replace("/")
             }
+            else console.log(data)
         } catch (err) {
-            console.log({error: err})
+            return ({error: err})
         }
     }
-
     const [error0, setError0] = React.useState("")
-    
     return (
 
         <Grid2 container xs md={9} mdOffset={-1} rowGap={1} sx={myStyle.gridConatiner} 
@@ -191,7 +192,7 @@ const [inputs, setInputs] = React.useState({
                             id="standard-helperText"
                             label="Title"
                             name="title"
-                            defaultValue={inputs.title.input} 
+                            value={inputs.title.input} 
                             error={inputs.title.error}
                             helperText={inputs.title.helperText}
                             onChange={handleChange} 
@@ -204,7 +205,7 @@ const [inputs, setInputs] = React.useState({
                             id="standard-helperText"
                             label="Author"
                             name="author" 
-                            defaultValue={inputs.author.input} 
+                            value={inputs.author.input} 
                             error={inputs.author.error}
                             helperText={inputs.author.helperText}
                             onChange={handleChange} 
@@ -220,7 +221,7 @@ const [inputs, setInputs] = React.useState({
                             id="standard-helperText"
                             label="Genre"
                             name="genre"
-                            defaultValue={inputs.genre.input}  
+                            value={inputs.genre.input}  
                             error={inputs.genre.error}
                             helperText={inputs.genre.helperText}
                             onChange={handleChange}  
@@ -233,7 +234,7 @@ const [inputs, setInputs] = React.useState({
                             id="standard-helperText"
                             label="Number of pages"
                             name="nbPage"
-                            defaultValue={inputs.nbPage.input} 
+                            value={inputs.nbPage.input} 
                             error={inputs.nbPage.error}
                             helperText={inputs.nbPage.helperText}
                             onChange={handleChange} 
@@ -248,7 +249,8 @@ const [inputs, setInputs] = React.useState({
                             label="Publication date"
                             name="pbDate"
                             type="date"
-                            defaultValue={inputs.pbDate.input} 
+                            format="yyyy-MM-ddT00:00:00.000Z"
+                            value={setDate(inputs.pbDate.input)} 
                             error={inputs.pbDate.error}
                             helperText={inputs.pbDate.helperText}
                             onChange={handleChange}  
@@ -264,7 +266,7 @@ const [inputs, setInputs] = React.useState({
                             id="standard-helperText"
                             label="Price"
                             name="price"
-                            defaultValue={inputs.price.input} 
+                            value={setPrice(inputs.price.input)} 
                             error={inputs.price.error} 
                             helperText={inputs.price.helperText}
                             onChange={handleChange} 
@@ -277,7 +279,7 @@ const [inputs, setInputs] = React.useState({
                             id="standard-helperText"
                             label="Book in stock"
                             name="bkInStck"
-                            defaultValue={inputs.bkInStck.input} 
+                            value={inputs.bkInStck.input} 
                             error={inputs.bkInStck.error}
                             helperText={inputs.bkInStck.helperText}
                             onChange={handleChange}  
@@ -295,15 +297,16 @@ const [inputs, setInputs] = React.useState({
                     id="standard-helperText"
                     label="Description"
                     name="desc"
-                    defaultValue={inputs.desc.input} 
+                    value={inputs.desc.input} 
                     error={inputs.desc.error}
                     helperText={inputs.desc.helperText}
                     onChange={handleChange} 
                 />
             </Grid2>
 
-            <Grid item>
-                <Button  variant="contained" type="submit" onClick={handleUpdate}> Update </Button>
+            <Grid item marginTop={1}>
+                {hasChanged===false && <Button  variant="outlined" type="cancel" onClick={() => router.back()}> Cancel </Button>}
+                {hasChanged===true && <Button  variant="contained" type="submit" onClick={handleUpdate}> Update </Button>}
             </Grid> 
             <Link href="/login" underline="hover" color="primary">
                 <Typography color="primary">{error0}</Typography>

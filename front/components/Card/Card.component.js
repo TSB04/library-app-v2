@@ -3,7 +3,6 @@ import { Grid, Typography, Card, CardMedia, CardContent  } from "@mui/material"
 import MyPopover from "../../components/Popover/Popover.component"
 import Theme from "../../theme/Theme"
 
-
 const myStyle = {
     globalContainer: {
         display: 'inline-block',
@@ -21,8 +20,14 @@ const myStyle = {
         overflow: "clip"
     }
 }
-const BookCard = ({title, desc, author, genre, nbPage, bkInStck, price, pbDate, userId, isbn, image}) => {
 
+const BookCard = ({title, desc, author, genre, nbPage, bkInStck, price, pbDate, src, userId, isbn, isAvble}) => {
+    if (isAvble === false) {
+        src = "/not-available.webp"
+    } else {
+        src = "/uploads/" + isbn + ".webp"
+    } 
+     
     return (
         <MyPopover>
             <Card sx={myStyle.globalContainer}>
@@ -43,20 +48,16 @@ const BookCard = ({title, desc, author, genre, nbPage, bkInStck, price, pbDate, 
                             </Typography>
                         </CardContent>
                     </Grid>
-
                     <Grid item xs={4}>
                         <CardMedia
                         component="img"
-                        image={image}
-                        alt="Live from space album cover"
+                        image={src} 
+                        alt="Books cover"
                         style={myStyle.media}
                         />
                     </Grid>
-
                 </Grid>
-
                 <Grid container direction="column" justifyContent="space-between">
-
                     <Grid item xs={8} md={8} >
                         <CardContent sx={myStyle.desc} name="myCardContentDesc">
                             <Typography component="div" variant="subtitle1" marginTop={-1}>
@@ -67,9 +68,8 @@ const BookCard = ({title, desc, author, genre, nbPage, bkInStck, price, pbDate, 
                     <Grid item xs={4} md={4} > 
                         <Grid container direction="row"   justifyContent="space-evenly" name="myCardContentFoot">
                                 <Grid >
-                    
                                     <Typography component="span" variant="subtitle2">
-                                    Page: {nbPage}
+                                        Page: {nbPage}
                                     </Typography>
                                 </Grid>
                                 <Grid >
@@ -84,16 +84,13 @@ const BookCard = ({title, desc, author, genre, nbPage, bkInStck, price, pbDate, 
                                 </Grid>
                         </Grid>
                     </Grid>
-                    
                 </Grid>
                 {/* Not very safe, but is the simplest way that i found to access sheet info for now  */}
                 <Typography sx={{fontSize: "1px"}}>{userId}</Typography>
                 <Typography sx={{fontSize: "1px"}}>{isbn}</Typography>
-
             </Card>
         </MyPopover>
     )
-    
 }
 
 export default BookCard

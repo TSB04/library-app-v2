@@ -24,11 +24,13 @@ function Home () {
 
     return (  
         <Box style={myStyle}>
-            {sheets && sheets.map(row => <BookCard
-                key={row.isbn} userId={row.userId} isbn={row.isbn} title={row.title} author={row.author}
-                genre={row.genre} pbDate={moment(row.pbDate).format('LL')} desc={row.desc} image="/icon2.jpeg"
-                nbPage={row.nbPage}bkInStck={row.bkInStck} price={row.price.$numberDecimal}
-            />)}
+            {sheets && sheets.map(row => 
+                <BookCard
+                    key={row.isbn} userId={row.userId} isbn={row.isbn} title={row.title} author={row.author}
+                    genre={row.genre} pbDate={moment(row.pbDate).format('LL')} desc={row.desc}
+                    nbPage={row.nbPage}bkInStck={row.bkInStck} price={row.price.$numberDecimal} isAvble={row.isAvble}
+                />
+            )}
         </Box>        
     )
 }

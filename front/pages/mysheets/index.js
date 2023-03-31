@@ -2,24 +2,19 @@ import * as React from "react"
 import { useState, useEffect } from "react"
 import BookCard from "../../components/Card/Card.component"
 import { Box, Typography } from "@mui/material"
-import axios from "axios"
 import moment from 'moment'
-import Cookies from "universal-cookie"
 
-
-    const myStyle = {
-        padding: "1% 0 0 0.5%",
-        position: "absolute",
-        left: "13.3%",
-        width: "86.7%",
-        maxHeight: "90vh",
-        overflow: "auto",
-    }
-
+const myStyle = {
+    padding: "1% 0 0 0.5%",
+    position: "absolute",
+    left: "13.3%",
+    width: "86.7%",
+    maxHeight: "90vh",
+    overflow: "auto",
+}
 
 function MySheets() {
-
-    let [mySheets, setMySheets] = React.useState()
+    const [mySheets, setMySheets] = React.useState()
 
 // Can't do this method because needs to access to sessionStorage from the Api endpoint /api/mysheets, which is impossible
     // useEffect(() => {
@@ -72,8 +67,8 @@ function MySheets() {
             {mySheets && mySheets.map(row =>
                 <BookCard 
                     key={row.isbn} userId={row.userId} isbn={row.isbn} title={row.title} author={row.author}
-                    genre={row.genre} pbDate={moment(row.pbDate).format('LL')} desc={row.desc} 
-                    nbPage={row.nbPage}bkInStck={row.bkInStck} price={row.price.$numberDecimal}
+                    genre={row.genre} pbDate={moment(row.pbDate).format('LL')} desc={row.desc}
+                    nbPage={row.nbPage} bkInStck={row.bkInStck} price={row.price.$numberDecimal} isAvble={row.isAvble}
                 />)
             }
         </Box> 

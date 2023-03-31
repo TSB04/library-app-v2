@@ -126,9 +126,6 @@ function Signup () {
                     "Password must be between 6 and 16 characters long, must contain upper case letters, lower case letters, numbers and must not contain spaces, symbols or successive characters."
                 }
             }
-                
-                
-            
         } catch (err) {
             console.log({error: err})
         }

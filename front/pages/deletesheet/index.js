@@ -1,5 +1,4 @@
 import * as React from "react"
-// import { useHistory } from "react-router-dom"
 import { useRouter } from 'next/router'
 import axios from "axios"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
@@ -42,8 +41,8 @@ function DeleteSheet() {
         <Typography variant="h4">Please confirm the deletion of the sheet</Typography>
 
         <Grid container justifyContent="center" columnGap={4}>
-            <Button variant="contained" sx={myStyle.non} onClick={() => router.back()}>Non</Button>
-            <Button variant="contained" sx={myStyle.yes} onClick={handleDelete}>Yes</Button>
+            <Button variant="contained" onClick={() => router.back()}>Non</Button>
+            <Button variant="contained" color="error" onClick={handleDelete}>Yes</Button>
         </Grid>
         </Grid2>
     )

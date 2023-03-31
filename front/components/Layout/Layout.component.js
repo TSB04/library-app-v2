@@ -2,7 +2,7 @@ import * as React from "react"
 import { Grid } from "@mui/material"
 import Header from "../Header/Header.component"
 import UserBar from "../UserBAr/UserBar.component"
-import bgImage from "../../public/book image/thumb-1920-26102.jpg"
+import bgImage from "../../public/thumb-1920-26102.jpg"
 
 
 const myStyle = {

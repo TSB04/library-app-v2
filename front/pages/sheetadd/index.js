@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { Grid, TextField, Typography, Button, Link } from "@mui/material"
 import axios from "axios"
-
+import Cookies from "universal-cookie"
 
 const myStyle = {
     gridConatiner: {
@@ -15,7 +15,6 @@ const myStyle = {
 }
 
 function AddSheet () {
-
     const [helperText, setHelperText] = React.useState({
         isbn:"Please enter the book's isbn",
         title: "Please enter the book's title",
@@ -27,7 +26,6 @@ function AddSheet () {
         price: "Please enter the book's price",
         bkInStck: "Please enter the number of books in stock"
     })
-
     const [error, setError] = React.useState({
         isbn: false,
         title: false,
@@ -39,7 +37,6 @@ function AddSheet () {
         price: false,
         bkInStck: false,
     })
-    
     const [inputs, setInputs] = React.useState({
         isbn: "",
         title: "",
@@ -51,9 +48,7 @@ function AddSheet () {
         price: "",
         bkInStck: ""
     })
-
     const [error0, setError0] = React.useState("")
-
     const handleChange = e => {
         const { name, value } = e.target;
         setInputs(prevState => ({
@@ -61,7 +56,6 @@ function AddSheet () {
             [name]: value
         }));
     }
-
     const handleSubmit = async (event) => {
         event.preventDefault()
         try {
@@ -72,6 +66,7 @@ function AddSheet () {
             })
             setError0("")
             if (data.message) {
+                uploadToServer()
                 window.alert(data.message)
                 window.location.replace('/')
             } else if (data.error === 0) {
@@ -91,7 +86,29 @@ function AddSheet () {
             console.log({error: err})
         }
     }
-    
+    const [image, setImage] = useState(null)   
+    const uploadToClient = (event) => {
+        if (event.target.files && event.target.files[0]) {
+            const i = event.target.files[0]
+            setImage(i)
+        }
+        return null
+    }
+    const uploadToServer = async (event) => {
+        const cookie = new Cookies
+        cookie.set("isbn", inputs.isbn)
+        const body = new FormData()
+        body.append("file", image)
+        try {
+            const { data } = await axios({
+                method: "POST",
+                url: "/api/upload",
+                data: body
+            })
+        } catch (err) {
+            return ({error: err})
+        }
+    }
     return (
         <Grid2 container xs md={9} mdOffset={-1} rowGap={1} sx={myStyle.gridConatiner} 
             justifyContent="space-evenly" alignItems="center" direction="column"
@@ -216,6 +233,12 @@ function AddSheet () {
                             helperText={helperText.bkInStck}  
                             onBlur={handleChange}
                         />
+                    </Grid>
+                    <Grid >
+                        <input type="file" name="upload"
+                            accept=".jpeg, .jpg, .png, .gif, .webp"
+                            onChange={uploadToClient}
+                        /> 
                     </Grid>
                 </Grid>
             </Grid> 
