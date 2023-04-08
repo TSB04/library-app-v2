@@ -11,7 +11,7 @@ const myStyle = {
         borderRadius: "8px",
         padding: "2%",
         height: "80%",
-        marginTop: "3%"
+        marginTop: "4%"
     },
 }
 
@@ -41,7 +41,6 @@ function Login () {
                 url: "/api/login",
                 data: formData
             })
-            console.log(data)
             if (data) {
                 if (data.message) {
                     const cookie = new Cookies
@@ -49,8 +48,8 @@ function Login () {
                     sessionStorage.setItem("jwt", data.token)
                     sessionStorage.setItem("fname", data.fName)
                     sessionStorage.setItem("lname", data.lName)
-
                     sessionStorage.setItem("userId", data.userId)
+                    sessionStorage.setItem("email", data.email)
                     if(data.isAdmin === true) {
                         sessionStorage.setItem("userPrvlge", data.isAdmin)
                     }
@@ -117,7 +116,7 @@ function Login () {
         }
     }
     return (
-        <Grid2 container md={4} mdOffset={-2} direction="column" justifyContent="space-evenly" alignItems="center" rowGap={2} sx={myStyle.gridConatiner}>
+        <Grid2 container md={4} mdOffset={4} direction="column" justifyContent="space-evenly" alignItems="center" rowGap={2} sx={myStyle.gridConatiner}>
             <Grid item>
                 <Typography variant="h3" >
                     Log in

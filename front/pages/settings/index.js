@@ -37,7 +37,7 @@ function Profile() {
     }
 
     return(
-        <Grid2 container xs md={9} mdOffset={-1} rowGap={4} sx={myStyle.gridConatiner} 
+        <Grid2 container xs md={9} mdOffset={1} rowGap={4} sx={myStyle.gridConatiner} 
             justifyContent="space-evenly" alignItems="center" direction="column"
         >        
         <Typography variant="warning">Note: Deleting your account is irreversible !!!</Typography>

@@ -14,8 +14,8 @@ const upload = multer({
         cb(null, path.join(process.cwd(), "public", "uploads"));
     },
     filename: function (req, file, cb) {
-        const imageName = req.cookies.isbn
-        cb(null,  imageName + ".webp");
+        const name = req.cookies.imgName
+        cb(null,  name + ".webp");
     },
     }),
 });
@@ -24,7 +24,6 @@ const upload = multer({
 const handler = nc({
     onError(err, req, res) {
         res.status(500).json({ error1: err.message });
-        console.log(err.message)
     },
     onNoMatch(req, res) {
         res.status(404).json({ error: `Method '${req.method}' Not Allowed` });

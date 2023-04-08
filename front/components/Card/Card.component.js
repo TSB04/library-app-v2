@@ -1,33 +1,31 @@
 import * as React from "react"
 import { Grid, Typography, Card, CardMedia, CardContent  } from "@mui/material"
-import MyPopover from "../../components/Popover/Popover.component"
+import MyPopover from "../Popover/Popover.component"
 import Theme from "../../theme/Theme"
 
 const myStyle = {
     globalContainer: {
-        display: 'inline-block',
-        width: "44vh",
-        height: "28vh",
+        width: "43.7vh",
+        height: "30vh",
+        padding: "0.5%",
         backgroundColor: Theme.palette.secondary.dark
     },
     media: {
         borderRadius: 5,
-        height: "16vh"
+        height: "17vh"
     },
     desc: {
         height:"9vh",
         padding: "1.2vh",
         overflow: "clip"
-    }
+    },
 }
-
-const BookCard = ({title, desc, author, genre, nbPage, bkInStck, price, pbDate, src, userId, isbn, isAvble}) => {
+const BookCard = ({title, desc, author, genre, nbPage, bkInStck, price, pbDate, src, isbn, isAvble}) => {
     if (isAvble === false) {
         src = "/not-available.webp"
     } else {
         src = "/uploads/" + isbn + ".webp"
     } 
-     
     return (
         <MyPopover>
             <Card sx={myStyle.globalContainer}>
@@ -85,12 +83,8 @@ const BookCard = ({title, desc, author, genre, nbPage, bkInStck, price, pbDate, 
                         </Grid>
                     </Grid>
                 </Grid>
-                {/* Not very safe, but is the simplest way that i found to access sheet info for now  */}
-                <Typography sx={{fontSize: "1px"}}>{userId}</Typography>
-                <Typography sx={{fontSize: "1px"}}>{isbn}</Typography>
             </Card>
         </MyPopover>
     )
 }
-
 export default BookCard
