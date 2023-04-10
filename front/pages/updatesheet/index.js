@@ -93,7 +93,7 @@ function UpdateSheet() {
 				})
 				return data
 			} catch (err) {
-				return { error: err }
+				throw { error: err }
 			}
 		}
 		getCardToUpdate()
@@ -106,7 +106,7 @@ function UpdateSheet() {
 				return param.$numberDecimal
 			}
 		}
-		return param
+		return null
 	}
 	const setDate = param => {
 		if (param) {

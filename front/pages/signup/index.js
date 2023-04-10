@@ -1,20 +1,11 @@
 import * as React from "react"
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import { Grid, TextField, Typography, Button, List, ListItem } from "@mui/material"
-import Theme from "../../theme/Theme"
 import axios from "axios"
 import Cookies from "universal-cookie"
-
-const myStyle = {
-	gridConatiner: {
-		backgroundColor: Theme.palette.secondary.light,
-		borderRadius: "8px",
-		marginTop: "3%",
-		padding: "2%",
-	},
-}
+import { Link, Typography } from "@mui/material"
+import Form from "../../components/Form/Form.component"
 
 function Signup() {
+	const [error0, setError0] = React.useState("")
 	const [formValid, setFormValid] = React.useState(false)
 	const [handleInputs, setHandleInputs] = React.useState({
 		fName: {
@@ -42,51 +33,56 @@ function Signup() {
 			helperText: "Please repeat your password",
 			error: true,
 		},
+		imgInput: {
+			input: "",
+			helperText: "Please upload your profile picture",
+			error: false,
+		},
 	})
-
-	const handleConfirmPassword = e => {
+	const handleConfirmPassword = () => {
 		setFormValid(false)
 		if (
-			handleInputs.password.input === e.target.value &&
+			handleInputs.password.input === handleInputs.confirmPasswrd.input &&
 			handleInputs.email.input !== ""
 		) {
+			setFormValid(true)
+		} else if (handleInputs.confirmPasswrd.input === "") {
+			setFormValid(false)
 			setHandleInputs(prevState => ({
 				...prevState,
 				confirmPasswrd: {
-					input: e.target.value,
-					helperText: "",
-					error: false,
+					input: prevState.confirmPasswrd.input,
+					helperText: "Please repeat your password",
+					error: true,
 				},
 			}))
-			setFormValid(true)
 		} else {
 			setFormValid(false)
 			setHandleInputs(prevState => ({
 				...prevState,
 				confirmPasswrd: {
-					input: e.target.value,
-					helperText: "the entered value differs from the password",
+					input: prevState.confirmPasswrd.input,
+					helperText: "Entered value differs from the password",
 					error: true,
 				},
 			}))
 		}
 	}
-
 	const handleChange = e => {
-		setFormValid(false)
+		setError0("")
+		handleConfirmPassword()
 		const { name, value } = e.target
 		setHandleInputs(prevState => ({
 			...prevState,
 			[name]: {
 				input: value,
-				helperText: "Please enter a value",
+				helperText: "",
 				error: false,
 			},
 		}))
 	}
 	const handleSubmit = async event => {
 		event.preventDefault()
-        uploadToServer()
 		const formData = {
 			fname: handleInputs.fName.input,
 			lname: handleInputs.lName.input,
@@ -100,31 +96,19 @@ function Signup() {
 				data: formData,
 			})
 			if (data.message) {
-                uploadToServer()
+				uploadToServer()
 				window.alert(data.message)
 				window.location.replace("/login")
-                const cookies = new Cookies()
-                cookies.remove("imgName")
-			}
-			else if (data.error) {
-				if (data.error.code) {
-					document.getElementById("error").innerHTML =
-						"You already have an account, please login or reset your password if you have forgotten it"
-				} else throw new Error("Something went wrong, please try again later")
+				const cookies = new Cookies()
+				cookies.remove("imgName")
+			} else if (data.error0) {
+				setError0(data.error0.message)
 			} else if (data) {
-				setHandleInputs(prevState => ({
-					...prevState,
-					confirmPasswrd: {
-						input: "",
-						helperText: prevState.confirmPasswrd.helperText,
-						error: true,
-					},
-				}))
 				for (const [key, value] of Object.entries(data)) {
 					setHandleInputs(prevState => ({
 						...prevState,
 						[key]: {
-							input: prevState[key].input,
+							input: "",
 							helperText: value.message,
 							error: true,
 						},
@@ -132,141 +116,120 @@ function Signup() {
 				}
 			} else throw new Error("Something went wrong, please try again later")
 		} catch (err) {
-			console.log({ error: err })
+			throw new Error(err)
 		}
 	}
-	React.useEffect(() => {
-		if (handleInputs.confirmPasswrd && handleInputs.password.error === true) {
-			document.getElementById("imgInput").style.display = "none"
-		} else if (handleInputs.confirmPasswrd && handleInputs.password.error === false) {
-			document.getElementById("imgInput").style.display = "block"
+	const [image, setImage] = React.useState(null)
+	const uploadToClient = event => {
+		if (event.target.files && event.target.files[0]) {
+			const i = event.target.files[0]
+			setImage(i)
 		}
-	}, [handleInputs.password.error])
-    const [image, setImage] = React.useState(null)   
-    const uploadToClient = (event) => {
-        if (event.target.files && event.target.files[0]) {
-            const i = event.target.files[0]
-            setImage(i)
-        }
-        return null
-    }
-    const uploadToServer = async (event) => {
-        const cookie = new Cookies
-        cookie.set("imgName", handleInputs.email.input)
-        const body = new FormData()
-        body.append("file", image)
-        try {
-            const { data } = await axios({
-                method: "POST",
-                url: "/api/upload",
-                data: body,
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                }
-            })
-            if (data) {
-                console.log(data)
-            }
-        } catch (err) {
-            return ({error: err})
-        }
-    }
+		return null
+	}
+	const uploadToServer = async () => {
+		const cookie = new Cookies()
+		cookie.set("imgName", handleInputs.email.input)
+		const body = new FormData()
+		body.append("file", image)
+		try {
+			const { data } = await axios({
+				method: "POST",
+				url: "/api/upload",
+				data: body,
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			})
+		} catch (err) {
+			throw new Error(err)
+		}
+	}
 
 	return (
-		<Grid2
-			container
-			xs
-			md={6.5}
-			mdOffset={2.5}
+		<Form
+			title="Sign Up"
+			direction="column"
+			md={6}
+			mdOffset={3}
 			rowGap={2}
-			columnGap={2}
-			sx={myStyle.gridConatiner}
-			justifyContent="center"
+			justifyContent="space-evenly"
 			alignItems="center"
-		>
-			<Typography variant="h3">Sign on</Typography>
-			<Grid container item columnGap={4} justifyContent="center">
-				{[
-					{
-						name: "fName",
-						label: "First name",
-						helperText: handleInputs.fName.helperText,
-						error: handleInputs.fName.error,
-					},
-					{
-						name: "lName",
-						label: "Last name",
-						helperText: handleInputs.lName.helperText,
-						error: handleInputs.lName.error,
-					},
-					{
-						name: "email",
-						label: "Email",
-						helperText: handleInputs.email.helperText,
-						error: handleInputs.email.error,
-					},
-					{
-						name: "password",
-						label: "Password",
-						helperText: handleInputs.password.helperText,
-						error: handleInputs.password.error,
-					},
-				].map((item, index) => (
-					<Grid item key={index}>
-						<TextField
-							size="small"
-							type="input"
-							fullWidth
-							id="demo-helper-text-aligned"
-							label={item.label}
-							name={item.name}
-							error={handleInputs[item.name].error}
-							helperText={handleInputs[item.name].helperText}
-							onChange={handleChange}
-						/>
-					</Grid>
-				))}
-				<Grid container item columnGap={4} justifyContent="flex-start" marginLeft={3}>
-					{handleInputs.password.input && (
-						<Grid item>
-							<TextField
-								size="small"
-								fullWidth
-								required
-								type="password"
-								id="demo-helper-text-aligned"
-								label="Confirm password"
-								name="confirm_password"
-								value={handleInputs.confirmPasswrd.input}
-								error={handleInputs.confirmPasswrd.error}
-								helperText={handleInputs.confirmPasswrd.helperText}
-								onChange={handleConfirmPassword}
-							/>
-						</Grid>
-					)}
-					<Grid item marginTop={2}>
-						<input
-							type="file"
-							name="upload"
-                            id="imgInput"
-							accept=".jpeg, .jpg, .png, .gif, .webp"
-							onChange={uploadToClient}
-						/>
-					</Grid>
-				</Grid>
-			</Grid>
-			<Grid item marginTop={1.2}>
-				<Button
-					// disabled={!formValid}
-					variant="contained"
-					type="submit"
-					onClick={handleSubmit}
-				>
-					Sign up
-				</Button>
-			</Grid>
-			<Typography id="error" variant="warning" textAlign="center" />
-		</Grid2>
+			iContainerRG={3}
+			iContainerCG={1.5}
+			iContainerD="row"
+			iContainerJC="space-evenly"
+			iContainerAI="center"
+			valid={!formValid}
+			handleChanges={handleChange}
+			submit={handleSubmit}
+			data={[
+				{
+					name: "fName",
+					label: "First Name",
+					type: "text",
+					value: handleInputs.fName.input,
+					helperText: handleInputs.fName.helperText,
+					error: handleInputs.fName.error,
+				},
+				{
+					name: "lName",
+					label: "Last Name",
+					type: "text",
+					value: handleInputs.lName.input,
+					helperText: handleInputs.lName.helperText,
+					error: handleInputs.lName.error,
+				},
+				{
+					name: "email",
+					label: "Email",
+					type: "email",
+					value: handleInputs.email.input,
+					helperText: handleInputs.email.helperText,
+					error: handleInputs.email.error,
+				},
+				{
+					name: "password",
+					label: "Password",
+					type: "password",
+					value: handleInputs.password.input,
+					helperText: handleInputs.password.helperText,
+					error: handleInputs.password.error,
+				},
+				{
+					name: "confirmPasswrd",
+					label: "Confirm Password",
+					type: "password",
+					disabled: handleInputs.password.input === "" ? true : false,
+					value: handleInputs.confirmPasswrd.input,
+					helperText: handleInputs.confirmPasswrd.helperText,
+					error: handleInputs.confirmPasswrd.error,
+					handleBlur: () => handleConfirmPassword(),
+				},
+				{
+					name: "imgInput",
+					label: "Profile Picture",
+					type: "file",
+					variant: "standard",
+					accept: ".jpg, .jpeg, .png",
+					value: handleInputs.imgInput.input,
+					helperText: handleInputs.imgInput.helperText,
+					error: handleInputs.imgInput.error,
+					handleBlur: e => uploadToClient(e),
+				},
+				// file input accept file types restriction only this way
+				// 				<input				
+				// 					accept=".jpeg, .jpg, .png, .gif, .webp"
+				// 				/>
+			]}
+			children={
+				<Link href="/login" underline="hover">
+					<Typography variant="body2" color="primary" align="center">
+						{error0}
+					</Typography>
+				</Link>
+			}
+		/>
 	)
 }
 export default Signup

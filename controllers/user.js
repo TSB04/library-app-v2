@@ -2,7 +2,6 @@ const mongoose = require("mongoose")
 const { Validator } = require("node-input-validator")
 const bcrypt = require("bcrypt")
 jwt = require("jsonwebtoken")
-
 const pwRules = require("../security/password")
 const User = require("../models/user")
 
@@ -14,7 +13,6 @@ exports.createUser = (req, res) => {
 		fname: "string|length:150",
 		lname: "string|length:100",
 	})
-
 	// Check the input data from the frontend
 	validInput
 		.check()
@@ -40,20 +38,22 @@ exports.createUser = (req, res) => {
 								lname: req.body.lname,
 								isAdmin: false,
 							})
-
 							// Store the user data in the database
 							user
 								.save()
 								.then(() =>
-									res
-										.status(200)
-										.json({ message: "User account created successfuly !!!" }),
+									res.status(200).json({ message: "User account created successfuly !!!" }),
 								)
-
 								// catch storage error
-								.catch(err => res.status(503).send({ error: err }))
+								.catch(err =>
+									res.status(503).send({
+										error0: {
+											message: "Email already exists, please try to login.",
+											error: err,
+										},
+									}),
+								)
 						})
-
 						// catch bcrypt error
 						.catch(err => res.status(502).send({ error: err }))
 				} else {
@@ -61,18 +61,16 @@ exports.createUser = (req, res) => {
 					res.status(500).json({
 						password: {
 							message:
-								"Password must be between 6 and 16 characters, must contain upper and lowercase letters and at least a digit.",
+								"Password must contain 6 to 16 characters, upper and lowercase letters and digits.",
 							rule: "required|string",
 						},
 					})
 				}
 			}
 		})
-
 		//catch validator error
 		.catch(err => res.status(501).send({ error: err }))
 }
-
 exports.logUser = (req, res) => {
 	//Login data inputs security
 	const validInput = new Validator(req.body, {
@@ -93,19 +91,26 @@ exports.logUser = (req, res) => {
 					.then(found => {
 						// If not found, handle the error
 						if (!found) {
-							res.status(404).json({ error: "User not found" })
+							res.status(404).json({
+								email: {
+									message: "Email not found, please try again.",
+								},
+							})
 						} else {
 							// Saving useful data in to variables
 							const pw = req.body.password
 							const hpw = found.password
-
 							// Compare the passwords
 							bcrypt
 								.compare(pw, hpw)
 								.then(match => {
 									// If not matched, handle error
 									if (match === false) {
-										res.status(403).json({ error: "Wrong password" })
+										res.status(403).json({
+											password: {
+												message: "Password is incorrect, please try again.",
+											},
+										})
 									} else {
 										// If input password is correct, return userId and privileges
 										res.status(200).json({
@@ -169,7 +174,7 @@ exports.getUser = (req, res) => {
 				res.status(500).json({ error: validInput.errors })
 			} else {
 				User.find()
-					.select({ fname: 1, lname: 1, isAdmin: 1, _id: 0 })
+					.select({ fname: 1, lname: 1, email: 1, _id: 0 })
 					.where({ ...req.body })
 					.then(found => {
 						if (!found) {

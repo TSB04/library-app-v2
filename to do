@@ -3,3 +3,13 @@ update sheet feature to complete
 add images to sheet and user
 put the project in docker container
 deploy on line
+
+setHandleInputs(prevState => ({
+    ...prevState,
+    [key]: {
+        input: value,
+        helperText: '',
+        error: false
+    }
+    
+  }))
