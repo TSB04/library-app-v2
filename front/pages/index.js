@@ -1,22 +1,8 @@
-import * as React from "react"
-import { Box } from "@mui/material"
+import React from "react"
 import BookCard from "../components/Card/Card.component"
 import moment from "moment"
 
-const myStyle = {
-	overflow: "auto",
-	maxWidth: "84.9%",
-}
-
-function Home() {
-	const [sheets, setSheets] = React.useState(null)
-	React.useEffect(() => {
-		fetch("http://localhost:4898/api/books/all")
-			.then(response => response.json())
-			.then(data => {
-				setSheets(data)
-			})
-	}, [])
+function Home({ data: sheets }) {
 	return (
 		<>
 			{sheets &&
@@ -39,4 +25,14 @@ function Home() {
 		</>
 	)
 }
+
+export async function getServerSideProps() {
+	const data = await fetch("http://localhost:4898/api/books/all").then(res =>
+		res.json().then(result => {
+			return result
+		}),
+	)
+	return { props: { data } }
+}
+
 export default Home

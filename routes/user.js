@@ -17,8 +17,11 @@ router.get('/all', userCtr.getAllUsers)
 // Route to get a user
 router.post('/user', userCtr.getUser)
 
+// Route to get a logged user
+router.post('/loggeduser', auth, userCtr.getLoggedUser)
+
 // Route to update a user
-router.put('/update', userCtr.updateUser)
+router.put('/update', auth, userCtr.updateUser)
 
 // Route to remove a user
 router.delete('/remove', auth , userCtr.deleteUser)

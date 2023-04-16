@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { Grid, TextField, Typography, Button, Link } from "@mui/material"
 import { useRouter } from "next/router"
@@ -71,7 +71,7 @@ function UpdateSheet() {
 		const param = { isbn: selectedCardIsbn }
 		const getCardToUpdate = async () => {
 			try {
-				const { data } = await axios({
+				await axios({
 					method: "POST",
 					url: "/api/getsheet",
 					data: param,
@@ -91,7 +91,6 @@ function UpdateSheet() {
 						}
 					}
 				})
-				return data
 			} catch (err) {
 				throw { error: err }
 			}
@@ -128,6 +127,7 @@ function UpdateSheet() {
 		}))
 		setHasChanged(true)
 		setError0("")
+		console.log(inputs)
 	}
 	const handleUpdate = async event => {
 		event.preventDefault()
@@ -167,7 +167,6 @@ function UpdateSheet() {
 					cookie.remove("imgName")
 					cookie.remove("isbn")
 				} else if (data) {
-					console.log(data)
 					for (let [key, value] of Object.entries(data)) {
 						setInputs(prevState => ({
 							...prevState,
@@ -331,6 +330,7 @@ function UpdateSheet() {
 				<Grid container direction="row" justifyContent="space-evenly" alignItems="center">
 					<Grid>
 						<TextField
+							focused
 							variant="standard"
 							size="small"
 							id="standard-helperText"

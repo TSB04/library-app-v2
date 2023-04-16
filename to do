@@ -1,6 +1,12 @@
-update user feature to complete
-update sheet feature to complete
-add images to sheet and user
+user CRUD to complete    (done)
+sheet CRUD to complete    (done)
+update user feature to complete    (...)
+update sheet feature to complete    (...)
+addImages features for sheet and user     (done)
+removeImages feature for sheet and user     (done)
+refonte the code to be more readable and more efficient
+optimize the way to get data from database
+remove the jwt token from the seesion storage and cookie and use sever side session
 put the project in docker container
 deploy on line
 

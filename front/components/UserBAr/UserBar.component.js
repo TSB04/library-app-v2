@@ -10,7 +10,7 @@ import {
 	Typography,
 } from "@mui/material"
 import Link from "next/link"
-import * as React from "react"
+import React from "react"
 import Theme from "../../theme/Theme"
 import Divider from "@mui/material/Divider"
 import { styled } from "@mui/material/styles"
@@ -74,13 +74,13 @@ const myStyle = {
 
 const UserBar = () => {
 	const [selected, setSelected] = React.useState(0)
-	const [hasPrvlge, setHasPrvlge] = React.useState(true)
+	const [hasPrvlge, setHasPrvlge] = React.useState(false)
 	const [open, setOpen] = React.useState(false)
-	const userPrvlge = sessionStorage.getItem("userPrvlge")
 	const userImg = sessionStorage.getItem("email") + ".webp"
 	const userImgPath = "/uploads/" + userImg 
 	
 	React.useEffect(() => {
+		const userPrvlge = sessionStorage.getItem("userPrvlge")
 		if (userPrvlge) {
 			setHasPrvlge(true)
 		}
@@ -89,7 +89,7 @@ const UserBar = () => {
 			window.innerWidth < 900 ? setOpen(false) : setOpen(true)
 		}
 		window.addEventListener("resize", handleResize)
-	})
+	},[])
 
 	return (
 		<Drawer
@@ -103,7 +103,7 @@ const UserBar = () => {
 			<Grid container  direction="column" rowGap={1} justifyContent="center" alignItems="center" textAlign="center">
 				{open ? (
 					<>
-						<Avatar alt="User Nom" src={userImgPath} sx={myStyle.avatar} />
+						<Avatar alt="Photo profil" src={userImgPath} sx={myStyle.avatar} />
 						<Typography variant="h5">{sessionStorage.getItem("fname")}</Typography>
 					</>
 				) : (
@@ -153,6 +153,7 @@ const UserBar = () => {
 							</ListItemButton>
 						</ListItem>
 					))}
+					{hasPrvlge &&
 					<ListItem disablePadding>
 						<ListItemButton
 							sx={{
@@ -163,7 +164,7 @@ const UserBar = () => {
 							selected={selected === 5}
 							onClick={_ => setSelected(5)}
 						>
-							<Link href="/users">
+							 <Link href="/users">
 									{open ? (	
 										<ListItemText
 											primary={<Typography variant="h5">users</Typography>}
@@ -180,7 +181,9 @@ const UserBar = () => {
 									)}
 							</Link>
 						</ListItemButton>
+					
 					</ListItem>
+}
 				</List>
 		</Drawer>
 	)

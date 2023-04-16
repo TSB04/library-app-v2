@@ -1,7 +1,7 @@
-export default function DeleteUser(req, res) {
+export default function GetLoggedUser(req, res) {
 	const token = req.cookies.jwt
-	fetch("http://localhost:4898/api/users/remove", {
-		method: "DELETE",
+	fetch("http://localhost:4898/api/users/loggeduser", {
+		method: "POST",
 		headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
 	})
 		.then(response => response.json())

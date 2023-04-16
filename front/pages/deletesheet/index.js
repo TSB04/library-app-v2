@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import { useRouter } from 'next/router'
 import axios from "axios"
 import Cookies from "universal-cookie"
@@ -19,10 +19,10 @@ const myStyle = {
 
 function DeleteSheet() {
     const [sheet, setSheet] = React.useState(null)
-    const cookies = new Cookies()
-    const selectedCardIsbn = cookies.get("isbn")
     // Get the sheet to delete from back
 	React.useEffect(() => {
+        const cookies = new Cookies()
+        const selectedCardIsbn = cookies.get("isbn")
 		const param = { isbn: selectedCardIsbn }
         const getSheet = async () => {
             try {

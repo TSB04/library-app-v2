@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import Image from "next/image"
 import axios from "axios"
 import { AppBar, Grid, IconButton, Link, Paper } from "@mui/material"
@@ -163,7 +163,7 @@ const Header = () => {
 				<Grid item alignContent="center">
 					<IconButton size="small">
 						<Link href="/">
-							<Image src={Logo} height="50%" width="55%" />
+							<Image src={Logo} alt="logo" height="50%" width="55%" />
 						</Link>
 					</IconButton>
 				</Grid>

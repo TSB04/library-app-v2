@@ -172,7 +172,7 @@ exports.getUser = (req, res) => {
 		.then(valid => {
 			if (valid === false) {
 				res.status(500).json({ error: validInput.errors })
-			} else {
+			} else if (valid === true) {
 				User.find()
 					.select({ fname: 1, lname: 1, email: 1, _id: 0 })
 					.where({ ...req.body })
@@ -186,11 +186,27 @@ exports.getUser = (req, res) => {
 
 					//catch mongoose error
 					.catch(err => res.status(502).send(err))
+			} else {
+				
 			}
 		})
 
 		// catch validator error
 		.catch(err => res.status(501).send(err))
+}
+
+exports.getLoggedUser = (req, res) => {
+	const params = res.locals.userId
+
+	User.find()
+		.where({ userId: params })
+		.then(found => {
+			if (!found) {
+				res.status(404).json({ error: "Not found" })
+			} else {
+				res.status(200).json(found)
+			}
+		})
 }
 
 exports.updateUser = (req, res) => {
@@ -208,8 +224,8 @@ exports.updateUser = (req, res) => {
 			} else {
 				// Had update this method because cannot use the id returned by the jwt
 				const data = { ...req.body }
-				const params = req.body.userId
-				// const params = res.locals.userId
+				// const params = req.body.userId
+				const params = res.locals.userId
 				// id récupéré dans le token = res.locals.userId
 				User.findOneAndUpdate({ userId: params }, data)
 					.then(e => {
@@ -230,7 +246,7 @@ exports.deleteUser = (req, res) => {
 	const params = res.locals.userId
 
 	// findByIdAndDelete() uses the _id field instead of userId
-	User.findOneAndDelete(params)
+	User.findOneAndDelete({ userId: params })
 		.then(deleted => {
 			if (!deleted) {
 				//If there is no return from findByIdAndDelete ()

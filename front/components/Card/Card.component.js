@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import { Grid, Typography, Card, CardMedia, CardContent  } from "@mui/material"
 import MyPopover from "../Popover/Popover.component"
 import Theme from "../../theme/Theme"

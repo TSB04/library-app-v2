@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import axios from "axios"
 import Cookies from "universal-cookie"
 import { Link, Typography } from "@mui/material"
@@ -114,9 +114,9 @@ function Signup() {
 						},
 					}))
 				}
-			} else throw new Error("Something went wrong, please try again later")
+			} else throw {error: "Something went wrong, please try again later"}
 		} catch (err) {
-			throw new Error(err)
+			throw {error: err}
 		}
 	}
 	const [image, setImage] = React.useState(null)
@@ -142,7 +142,7 @@ function Signup() {
 				},
 			})
 		} catch (err) {
-			throw new Error(err)
+			throw {error: err}
 		}
 	}
 
@@ -221,15 +221,16 @@ function Signup() {
 				// 				<input				
 				// 					accept=".jpeg, .jpg, .png, .gif, .webp"
 				// 				/>
-			]}
-			children={
+			]}	
+			link={
 				<Link href="/login" underline="hover">
 					<Typography variant="body2" color="primary" align="center">
 						{error0}
 					</Typography>
 				</Link>
-			}
+			}		
 		/>
+		
 	)
 }
 export default Signup

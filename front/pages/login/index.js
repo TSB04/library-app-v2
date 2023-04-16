@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import axios from "axios"
 import Cookies from "universal-cookie"
 import {Link, Typography} from "@mui/material"
@@ -76,13 +76,13 @@ function Login() {
 
 					}
 				} else {
-					throw new Error("Something went wrong")
+					throw {error: "Something went wrong"}
 				}
 			} else {
-				throw new Error("the servor doesn't respond")
+				throw  {error: "the servor doesn't respond"}
 			}
 		} catch (err) {
-			throw new Error(err)
+			throw {error: err}
 		}
 	}
 	return (
@@ -117,7 +117,7 @@ function Login() {
 					error: handleInputs.password.error,
 				},
 			]}
-			children={
+			link={
 				<Link href={error0C === 0 ? "/signup" : "/#"} underline="hover">
 					{error0C === 0 ? (
 						<Typography variant="body2" color="primary">
@@ -131,6 +131,7 @@ function Login() {
 				</Link>
 			}
 		/>
+		
 	)
 }
 export default Login

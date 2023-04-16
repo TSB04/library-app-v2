@@ -2,7 +2,7 @@ import fs from "fs"
 import path from "path"
 
 const remove = (req, res) => {
-    const param = req.body.isbn
+	const param = req.body.isbn
 	const fileName = param + ".webp"
 	const directoryPath = path.join(process.cwd(), "public", "uploads/")
 

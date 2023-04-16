@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import { Grid, Box } from "@mui/material"
 import Header from "../Header/Header.component"
 import UserBar from "../UserBAr/UserBar.component"

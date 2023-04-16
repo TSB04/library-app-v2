@@ -1,6 +1,6 @@
 import React from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import { Grid, TextField, Typography, Button} from "@mui/material"
+import { Grid, TextField, Typography, Button } from "@mui/material"
 import Theme from "../../theme/Theme"
 const myStyle = {
 	gridConatiner: {
@@ -33,37 +33,44 @@ const Form = props => {
 				rowGap={props.iContainerRG}
 				columnGap={props.iContainerCG}
 			>
-				{props.data && props.data.map((item, index) => {
-					return (
-						<TextField
-							key={index}
-							fullWidth
-							required
-							id={`demo-helper-text-aligned-${item.name}`}
-							variant={item.variant ? item.variant : "outlined"}
-							label={item.label}
-							name={item.name}
-							type={item.type}
-							disabled={item.disabled ? item.disabled : false}
-							accept={item.accept}
-							defaultValue={item.defaultValue ? item.defaultValue : ""}
-							value={props.value}
-							helperText={item.helperText}
-							error={item.error}
-							onChange={props.handleChanges}
-							onBlur={item.handleBlur}
-						/>
-					)
-				})}
+				{props.data &&
+					props.data.map((item, index) => {
+						return (
+							<TextField
+								key={index}
+								fullWidth
+								required
+								id={`demo-helper-text-aligned-${item.name}`}
+								variant={item.variant ? item.variant : "outlined"}
+								label={item.label}
+								name={item.name}
+								type={item.type}
+								disabled={item.disabled ? item.disabled : false}
+								accept={item.accept}
+								defaultValue={item.defaultValue ? item.defaultValue : ""}
+								value={props.value}
+								helperText={item.helperText}
+								error={item.error}
+								onChange={props.handleChanges}
+								onBlur={item.handleBlur}
+							/>
+						)
+					})}
 			</Grid>
 			<Grid item>
-				<Button variant="contained" disabled={props.valid ? props.valid : false} onClick={props.submit}>
-					{props.buttonSubmit ? props.buttonSubmit : props.title}
-				</Button>
+				{props.submitBtn ? (
+					props.submitBtn
+				) : (
+					<Button
+						variant="contained"
+						disabled={props.valid ? props.valid : false}
+						onClick={props.submit}
+					>
+						{props.submitBtnTitle ? props.submitBtnTitle : props.title}
+					</Button>
+				)}
 			</Grid>
-			<Grid item>
-				{props.children}
-			</Grid>
+			<Grid item>{props.link}</Grid>
 		</Grid2>
 	)
 }

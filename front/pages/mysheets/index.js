@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import { useState, useEffect } from "react"
 import BookCard from "../../components/Card/Card.component"
 import { Box, Typography } from "@mui/material"
