@@ -5,11 +5,11 @@ services:
     image: library.app.front
     build:
       context: front
-      dockerfile: ./Dockerfile
+      dockerfile: /Dockerfile
     environment:
       - NODE_ENV=porduction
     ports:
-      - 3000:3000
+      - :3000
   
   back:
     image: library.app.back
@@ -21,4 +21,4 @@ services:
     environment:
       - NODE_ENV=porduction
     ports:
-      - 4898:4898
+      - :4898

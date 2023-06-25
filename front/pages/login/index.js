@@ -36,6 +36,7 @@ function Login() {
 			email: handleInputs.email.input,
 			password: handleInputs.password.input,
 		}
+		console.log(formData)
 		try {
 			const { data } = await axios({
 				method: "POST",
@@ -44,38 +45,43 @@ function Login() {
 			})
 			if (data) {
 				if (data.message) {
+					console.log(data)
 					const cookie = new Cookies()
 					cookie.set("jwt", data.token)
 					sessionStorage.setItem("jwt", data.token)
 					sessionStorage.setItem("fname", data.fName)
 					sessionStorage.setItem("lname", data.lName)
 					sessionStorage.setItem("userId", data.userId)
-					sessionStorage.setItem("email", data.email)
+					sessionStorage.setItem("email", formData.email)
 					if (data.isAdmin === true) {
 						sessionStorage.setItem("userPrvlge", data.isAdmin)
 					}
 					window.alert(data.message)
 					window.location.replace("/")
 				} else if (data){
+					console.log(data)
 					for (let [key, value] of Object.entries(data)) {
 						setHandleInputs(prevState => ({
 							...prevState,
 							[key]: {
-								input: prevState[key].input,
+								input: prevState[key],
 								helperText: data[key].message,
 								error: true,
 							},
 						}))
 					}
 					if (data.password) {
+						console.log(data)
 						setError0C(1)
 						setError0("forgot your password ???")
 					} else if(data.email) {
+						console.log(data)
 						setError0C(0)
 						setError0("Don't have an account yet !!!")
 
 					}
 				} else {
+					console.log(data)
 					throw {error: "Something went wrong"}
 				}
 			} else {

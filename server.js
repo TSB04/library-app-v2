@@ -29,11 +29,9 @@ const errorHandler = error => {
         case 'EACCES':
             console.eroor(bind +' requires elevate privilegies.')
             process.exit(1)
-            break
         case 'EADDRINUSE' :
             console.error(bind + 'is already in use.')
             process.exit(1)
-            break
         default:
             throw error     
     }

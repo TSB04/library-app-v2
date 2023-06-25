@@ -12,7 +12,8 @@ const credentials = {
 	db: process.env.DATABASE,
 	key: process.env.KEY_DEPLOYMT,
 }
-const access = `mongodb+srv://${credentials.user}:${credentials.pw}@${credentials.db}.${credentials.key}.mongodb.net/?retryWrites=true&w=majority`
+// const access = `mongodb+srv://${credentials.user}:${credentials.pw}@${credentials.db}.${credentials.key}.mongodb.net/?retryWrites=true&w=majority`
+const access = "mongodb+srv://tsb2:Azerty010203@db-fsc-1.aycfyd0.mongodb.net/?retryWrites=true&w=majority"
 const app = express()
 app.use(express.json())
 mongoose
